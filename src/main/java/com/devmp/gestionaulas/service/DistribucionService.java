@@ -18,4 +18,8 @@ public class DistribucionService {
 		return repository.findAll();
 	}
 
+	public Distribucion guardar(Distribucion distribucion) {
+		return repository.save(distribucion);
+	}
+
 }

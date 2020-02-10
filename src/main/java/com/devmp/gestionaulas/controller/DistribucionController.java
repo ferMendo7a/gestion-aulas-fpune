@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,6 +23,12 @@ public class DistribucionController {
 	@GetMapping("/todos")
 	public ResponseEntity<List<Distribucion>> getAll() {
 		List<Distribucion> retorno = service.getAll();
+		return ResponseEntity.ok().body(retorno);
+	}
+
+	@PostMapping("/guardar")
+	public ResponseEntity<Distribucion> save(@RequestBody Distribucion distribucion) {
+		Distribucion retorno = service.guardar(distribucion);
 		return ResponseEntity.ok().body(retorno);
 	}
 
