@@ -16,5 +16,3 @@ mvnw
 mvnw.cmd
 
 src/test/
-
-src/main/resources/application.properties
