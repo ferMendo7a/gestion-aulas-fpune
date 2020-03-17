@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import lombok.Data;
 
@@ -21,5 +22,8 @@ public class Usuario {
 
 	@Column(name = "password")
 	private String password;
+	
+	@Transient
+	private String token;
 	
 }
