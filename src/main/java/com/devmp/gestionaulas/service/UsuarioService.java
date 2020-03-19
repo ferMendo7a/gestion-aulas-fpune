@@ -11,11 +11,15 @@ import com.devmp.gestionaulas.repository.IUsuarioRepository;
 @Service
 public class UsuarioService {
 
-	@Autowired
-	private IUsuarioRepository repository;
+    @Autowired
+    private IUsuarioRepository repository;
 
-	public List<Usuario> getAll() {
-		return repository.findAll();
-	}
+    public List<Usuario> getAll() {
+        return repository.findAll();
+    }
+
+    public Usuario findByLoginAndPassword(String username, String password) {
+        return repository.findByUsernameEqualsAndPasswordEquals(username, password);
+    }
 
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,12 +27,18 @@ public class LoginController {
     private UsuarioService service;
 
     @PostMapping
-    public Usuario login(@RequestParam("user") String username, @RequestParam("password") String pass) {
-        String token = getJWTToken(username);
-        Usuario usuario = new Usuario();
-        usuario.setUsername(username);
-        usuario.setToken(token);
-        return usuario;
+    public ResponseEntity<Usuario> login(@RequestParam("username") String username, @RequestParam("password") String password) {
+        try {
+            Usuario usuario = service.findByLoginAndPassword(username, password);
+            if (usuario == null) {
+                return ResponseEntity.badRequest().body(usuario);
+            }
+            usuario.setToken(getJWTToken(usuario.getUsername()));
+            return ResponseEntity.ok(usuario);
+        } catch (Exception e) {
+            return null;
+        }
+
     }
 
     private String getJWTToken(String username) {
