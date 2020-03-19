@@ -8,4 +8,6 @@ import com.devmp.gestionaulas.model.Usuario;
 @Repository
 public interface IUsuarioRepository extends JpaRepository<Usuario, Integer> {
 
+    Usuario findByUsernameEqualsAndPasswordEquals(String username, String password);
+
 }
