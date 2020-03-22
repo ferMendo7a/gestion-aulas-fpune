@@ -20,7 +20,7 @@ public class DistribucionController {
 	@Autowired
 	private DistribucionService service;
 
-	@GetMapping("/todos")
+	@GetMapping
 	public ResponseEntity<List<Distribucion>> getAll() {
 		List<Distribucion> retorno = service.getAll();
 		return ResponseEntity.ok().body(retorno);
