@@ -18,7 +18,7 @@ public class AulaController {
 	@Autowired
 	private AulaService service;
 
-	@GetMapping("/todos")
+	@GetMapping
 	public ResponseEntity<List<Aula>> getAll() {
 		List<Aula> retorno = service.getAll();
 		return ResponseEntity.ok().body(retorno);

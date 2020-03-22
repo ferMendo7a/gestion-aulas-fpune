@@ -18,7 +18,7 @@ public class CarreraController {
 	@Autowired
 	private CarreraService service;
 
-	@GetMapping("/todos")
+	@GetMapping
 	public ResponseEntity<List<Carrera>> getAll() {
 		List<Carrera> retorno = service.getAll();
 		return ResponseEntity.ok().body(retorno);

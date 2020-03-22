@@ -18,7 +18,7 @@ public class MateriaController {
 	@Autowired
 	private MateriaService service;
 
-	@GetMapping("/todos")
+	@GetMapping
 	public ResponseEntity<List<Materia>> getAll() {
 		List<Materia> retorno = service.getAll();
 		return ResponseEntity.ok().body(retorno);
