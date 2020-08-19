@@ -18,4 +18,12 @@ public class MateriaService {
 		return repository.findAll();
 	}
 
+	public Materia insertOrUpdate(Materia materia) {
+		return repository.save(materia);
+	}
+
+	public Materia findById(Integer id) {
+		return repository.findById(id).orElse(null);
+	}
+
 }

@@ -18,4 +18,12 @@ public class CarreraService {
 		return repository.findAll();
 	}
 
+	public Carrera insertOrUpdate(Carrera carrera) {
+		return repository.save(carrera);
+	}
+
+	public Carrera findById(Integer id) {
+		return repository.findById(id).orElse(null);
+	}
+
 }

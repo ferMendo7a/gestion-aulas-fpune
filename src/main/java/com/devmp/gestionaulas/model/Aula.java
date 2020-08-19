@@ -2,7 +2,10 @@ package com.devmp.gestionaulas.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.Data;
@@ -13,6 +16,8 @@ import lombok.Data;
 public class Aula {
 
 	@Id
+	@GeneratedValue(generator = "SEQ_AULA_GENERATOR", strategy = GenerationType.SEQUENCE)
+	@SequenceGenerator(name = "SEQ_AULA_GENERATOR", sequenceName = "seq_aula", allocationSize = 1)
 	@Column(name = "id")
 	private Integer id;
 
@@ -20,6 +25,6 @@ public class Aula {
 	private String descripcion;
 
 	@Column(name = "sector")
-	private String sector;	
-	
+	private String sector;
+
 }

@@ -8,11 +8,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -20,6 +23,8 @@ import lombok.Data;
 
 @Data
 @Entity
+@DynamicInsert
+@DynamicUpdate
 @Table(name = "distribucion")
 public class Distribucion {
 
@@ -29,17 +34,21 @@ public class Distribucion {
 	@SequenceGenerator(name = "SEQ_DISTRIBUCION_GENERATOR", sequenceName = "seq_distribucion", allocationSize = 1)
 	private Integer id;
 
-	@OneToOne
-	@JoinColumn(name = "id_carrera")
+	@ManyToOne
+	@JoinColumn(name = "id_carrera", updatable = false)
 	private Carrera carrera;
 
-	@OneToOne
-	@JoinColumn(name = "id_aula")
+	@ManyToOne
+	@JoinColumn(name = "id_aula", updatable = false)
 	private Aula aula;
 
-	@OneToOne
-	@JoinColumn(name = "id_materia")
+	@ManyToOne
+	@JoinColumn(name = "id_materia", updatable = false)
 	private Materia materia;
+
+	@ManyToOne
+	@JoinColumn(name = "id_usuario", updatable = false)
+	private Usuario usuario;
 
 	@Column(name = "horario_inicio")
 	@Temporal(TemporalType.TIME)

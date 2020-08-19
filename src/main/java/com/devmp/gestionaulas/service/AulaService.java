@@ -18,4 +18,12 @@ public class AulaService {
 		return repository.findAll();
 	}
 
+	public Aula insertOrUpdate(Aula aula) {
+		return repository.save(aula);
+	}
+
+	public Aula findById(Integer id) {
+		return repository.findById(id).orElse(null);
+	}
+
 }

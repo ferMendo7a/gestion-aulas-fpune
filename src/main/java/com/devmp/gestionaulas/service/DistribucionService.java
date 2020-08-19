@@ -18,7 +18,7 @@ public class DistribucionService {
 		return repository.findAll();
 	}
 
-	public Distribucion guardar(Distribucion distribucion) {
+	public Distribucion insertOrUpdate(Distribucion distribucion) {
 		return repository.save(distribucion);
 	}
 

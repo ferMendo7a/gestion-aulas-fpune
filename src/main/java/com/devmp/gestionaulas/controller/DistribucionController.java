@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,15 +21,17 @@ public class DistribucionController {
 	@Autowired
 	private DistribucionService service;
 
+	@Secured({ "ROLE_ADMIN" })
 	@GetMapping
 	public ResponseEntity<List<Distribucion>> getAll() {
 		List<Distribucion> retorno = service.getAll();
 		return ResponseEntity.ok().body(retorno);
 	}
 
+	@Secured("ROLE_ADMIN")
 	@PostMapping("/guardar")
 	public ResponseEntity<Distribucion> save(@RequestBody Distribucion distribucion) {
-		Distribucion retorno = service.guardar(distribucion);
+		Distribucion retorno = service.insertOrUpdate(distribucion);
 		return ResponseEntity.ok().body(retorno);
 	}
 
