@@ -52,16 +52,17 @@ public class Distribucion {
 
 	@Column(name = "horario_inicio")
 	@Temporal(TemporalType.TIME)
-	@JsonFormat(pattern = "HH:mm:ss")
+	@JsonFormat(pattern = "HH:mm", timezone = "America/Asuncion")
 	private Date horarioInicio;
 
 	@Column(name = "horario_fin")
 	@Temporal(TemporalType.TIME)
-	@JsonFormat(pattern = "HH:mm:ss")
+	@JsonFormat(pattern = "HH:mm", timezone = "America/Asuncion")
 	private Date horarioFin;
 
 	@Column(name = "fecha")
 	@Temporal(TemporalType.DATE)
+	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "America/Asuncion")
 	private Date fecha;
 
 }
