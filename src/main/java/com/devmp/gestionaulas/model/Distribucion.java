@@ -35,19 +35,19 @@ public class Distribucion {
 	private Integer id;
 
 	@ManyToOne
-	@JoinColumn(name = "id_carrera", updatable = false)
+	@JoinColumn(name = "id_carrera")
 	private Carrera carrera;
 
 	@ManyToOne
-	@JoinColumn(name = "id_aula", updatable = false)
+	@JoinColumn(name = "id_aula")
 	private Aula aula;
 
 	@ManyToOne
-	@JoinColumn(name = "id_materia", updatable = false)
+	@JoinColumn(name = "id_materia")
 	private Materia materia;
 
 	@ManyToOne
-	@JoinColumn(name = "id_usuario", updatable = false)
+	@JoinColumn(name = "id_usuario")
 	private Usuario usuario;
 
 	@Column(name = "horario_inicio")

@@ -44,7 +44,7 @@ public class Usuario {
 	private String estado;
 
 	@ManyToOne
-	@JoinColumn(name = "id_grupo", updatable = false)
+	@JoinColumn(name = "id_grupo")
 	private Grupo grupo;
 
 }

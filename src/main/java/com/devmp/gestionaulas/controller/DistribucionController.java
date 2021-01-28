@@ -31,7 +31,7 @@ public class DistribucionController {
 	@Secured("ROLE_ADMIN")
 	@PostMapping("/guardar")
 	public ResponseEntity<Distribucion> save(@RequestBody Distribucion distribucion) {
-		Distribucion retorno = service.insertOrUpdate(distribucion);
+ 		Distribucion retorno = service.insertOrUpdate(distribucion);
 		return ResponseEntity.ok().body(retorno);
 	}
 
