@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,10 +29,17 @@ public class DistribucionController {
 		return ResponseEntity.ok().body(retorno);
 	}
 
+	@Secured({ "ROLE_ADMIN" })
+	@PutMapping
+	public ResponseEntity<List<Distribucion>> getAll(@RequestBody Distribucion filtroDistribucion) {
+		List<Distribucion> retorno = service.getAll(filtroDistribucion);
+		return ResponseEntity.ok().body(retorno);
+	}
+
 	@Secured("ROLE_ADMIN")
 	@PostMapping("/guardar")
 	public ResponseEntity<Distribucion> save(@RequestBody Distribucion distribucion) {
- 		Distribucion retorno = service.insertOrUpdate(distribucion);
+		Distribucion retorno = service.insertOrUpdate(distribucion);
 		return ResponseEntity.ok().body(retorno);
 	}
 
