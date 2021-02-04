@@ -35,8 +35,8 @@ public class Distribucion {
 	private Integer id;
 
 	@ManyToOne
-	@JoinColumn(name = "id_carrera")
-	private Carrera carrera;
+	@JoinColumn(name = "id_curso")
+	private Curso curso;
 
 	@ManyToOne
 	@JoinColumn(name = "id_aula")
