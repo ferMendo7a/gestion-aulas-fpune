@@ -74,6 +74,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		Map<String, Object> body = new HashMap<String, Object>();
 		body.put("token", token);
 		body.put("user", (User) authResult.getPrincipal());
+		body.put("expiration", JWTServiceImpl.EXPIRATION_DATE);
 //		body.put("mensaje", String.format("Hola %s, has iniciado sesión con éxito!",
 //				((User) authResult.getPrincipal()).getUsername()));
 

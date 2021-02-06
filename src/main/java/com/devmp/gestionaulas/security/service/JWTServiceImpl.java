@@ -25,7 +25,7 @@ public class JWTServiceImpl implements JWTService {
 
 	public static final String SECRET = Base64Utils.encodeToString("InsertarClave".getBytes());
 
-	public static final long EXPIRATION_DATE = 3600000L;
+	public static final long EXPIRATION_DATE = 7200000L;
 	public static final String TOKEN_PREFIX = "Bearer ";
 	public static final String HEADER_STRING = "Authorization";
 
