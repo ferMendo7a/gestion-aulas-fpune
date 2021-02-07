@@ -40,7 +40,11 @@ public class DistribucionController {
 	@PostMapping("/guardar")
 	public ResponseEntity<Distribucion> save(@RequestBody Distribucion distribucion) {
 		Distribucion retorno = service.insertOrUpdate(distribucion);
-		return ResponseEntity.ok().body(retorno);
+		if (retorno != null) {
+			return ResponseEntity.ok(retorno);
+		} else {
+			return ResponseEntity.badRequest().body(retorno);
+		}
 	}
 
 }
