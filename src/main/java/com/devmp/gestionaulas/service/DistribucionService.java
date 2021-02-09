@@ -1,5 +1,8 @@
 package com.devmp.gestionaulas.service;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -9,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.devmp.gestionaulas.model.Distribucion;
+import com.devmp.gestionaulas.model.Periodo;
 import com.devmp.gestionaulas.repository.IDistribucionRepository;
 
 @Service
@@ -21,6 +25,9 @@ public class DistribucionService {
 	private CursoService cursoService;
 
 	@Autowired
+	private PeriodoService periodoService;
+
+	@Autowired
 	private EntityManager em;
 
 	public List<Distribucion> getAll() {
@@ -28,11 +35,92 @@ public class DistribucionService {
 	}
 
 	public Distribucion insertOrUpdate(Distribucion distribucion) {
-		// validar datos
-		// validar aula disponible, curso con horario ya registrado
+		Distribucion retorno = null;
+		// validar periodo lectivo activo
+		Periodo periodoActual = getPeriodoActual(distribucion);
+		if (periodoActual == null) {
+			return null;
+		}
+
 		// consultar curso, si no existe guardar
 		distribucion.setCurso(cursoService.insertIfNotExists(distribucion.getCurso()));
-		return repository.save(distribucion);
+
+		// validar aula disponible
+		// 1. consultar horarios por aula, fecha, inicio y fin de la distribucion
+		// 2. si existe informar al usuario
+		Distribucion distribucionRegistrada = getDistribucionByAulaAndHorario(distribucion);
+		if (distribucionRegistrada != null && distribucionRegistrada.getId() != null) {
+			return null;
+		}
+
+		// curso con horario ya registrado
+		// 1. consultar horarios por curso, fecha, inicio y fin de la distribucion
+		distribucionRegistrada = getDistribucionByCursoAndHorario(distribucion);
+		if (distribucionRegistrada != null && distribucionRegistrada.getId() != null) {
+			return null;
+		}
+
+		// guardar distribucion hasta el final del periodo lectivo si
+		// registrarHastaFinalPeriodo es true
+		if (distribucion.isRegistrarHastaFinalPeriodo()) {
+			// agregar 8 dias a la fecha de la distribucion hasta llegar a la fecha fin del
+			// periodo lectivo
+			List<Distribucion> distribucionList = new ArrayList<Distribucion>();
+			Date fechaNew = distribucion.getFecha();
+
+			while (periodoActual.getFechaFin().compareTo(fechaNew) >= 0) {
+				Distribucion distribucionNew = new Distribucion();
+				distribucionNew.setAula(distribucion.getAula());
+				distribucionNew.setCurso(distribucion.getCurso());
+				distribucionNew.setMateria(distribucion.getMateria());
+				distribucionNew.setUsuario(distribucion.getUsuario());
+				distribucionNew.setHorarioInicio(distribucion.getHorarioInicio());
+				distribucionNew.setHorarioFin(distribucion.getHorarioFin());
+				distribucionNew.setFecha(fechaNew);
+				distribucionList.add(distribucionNew);
+
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(distribucionNew.getFecha());
+				calendar.add(Calendar.DAY_OF_YEAR, 7);
+				fechaNew = calendar.getTime();
+			}
+
+			distribucionList = repository.saveAll(distribucionList);
+			if (!distribucionList.isEmpty()) {
+				retorno = distribucionList.get(0);
+			}
+		} else {
+			retorno = repository.save(distribucion);
+		}
+
+		return retorno;
+	}
+
+	private Distribucion getDistribucionByAulaAndHorario(Distribucion distribucion) {
+		List<Distribucion> result = repository
+				.findByAulaAndFechaAndHorarioInicioLessThanEqualAndHorarioFinGreaterThanEqual(distribucion.getAula(),
+						distribucion.getFecha(), distribucion.getHorarioInicio(), distribucion.getHorarioFin());
+		if (result.isEmpty()) {
+			return null;
+		} else {
+			return result.get(0);
+		}
+	}
+
+	private Distribucion getDistribucionByCursoAndHorario(Distribucion distribucion) {
+		List<Distribucion> result = repository
+				.findByCursoAndFechaAndHorarioInicioLessThanEqualAndHorarioFinGreaterThanEqual(distribucion.getCurso(),
+						distribucion.getFecha(), distribucion.getHorarioInicio(), distribucion.getHorarioFin());
+		if (result.isEmpty()) {
+			return null;
+		} else {
+			return result.get(0);
+		}
+	}
+
+	private Periodo getPeriodoActual(Distribucion distribucion) {
+		Periodo periodoActual = periodoService.getPeriodoByFecha(distribucion.getFecha());
+		return periodoActual;
 	}
 
 	public List<Distribucion> getAll(Distribucion filtroDistribucion) {

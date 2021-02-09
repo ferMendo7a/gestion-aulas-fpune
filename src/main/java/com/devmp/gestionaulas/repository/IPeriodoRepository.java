@@ -11,6 +11,6 @@ import com.devmp.gestionaulas.model.Periodo;
 @Repository
 public interface IPeriodoRepository extends JpaRepository<Periodo, Integer> {
 
-	List<Periodo> findByFechaInicioLessThanEqualAndFechaFinGreaterThanEqual(Date fecha);
+	List<Periodo> findByFechaInicioLessThanEqualAndFechaFinGreaterThanEqual(Date fecha1, Date fecha2);
 
 }

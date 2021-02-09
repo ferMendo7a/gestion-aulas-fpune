@@ -21,4 +21,6 @@ public interface JWTService {
 	public Collection<? extends GrantedAuthority> getRoles(String token) throws IOException;
 
 	public String resolve(String token);
+
+	public String getUserId(String username);
 }

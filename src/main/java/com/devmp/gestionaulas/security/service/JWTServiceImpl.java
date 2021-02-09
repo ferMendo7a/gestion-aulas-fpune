@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Base64Utils;
 
 import com.devmp.gestionaulas.security.SimpleGrantedAuthorityMixin;
+import com.devmp.gestionaulas.service.UsuarioService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Claims;
@@ -28,6 +30,9 @@ public class JWTServiceImpl implements JWTService {
 	public static final long EXPIRATION_DATE = 7200000L;
 	public static final String TOKEN_PREFIX = "Bearer ";
 	public static final String HEADER_STRING = "Authorization";
+
+	@Autowired
+	private UsuarioService serviceUsuario;
 
 	@Override
 	public String create(Authentication auth) throws IOException {
@@ -89,6 +94,15 @@ public class JWTServiceImpl implements JWTService {
 			return token.replace(TOKEN_PREFIX, "");
 		}
 		return null;
+	}
+
+	@Override
+	public String getUserId(String username) {
+		Integer userId = serviceUsuario.getIdByUsername(username);
+		if (userId != null) {
+			return String.valueOf(userId);
+		} else
+			return null;
 	}
 
 }

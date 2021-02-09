@@ -75,6 +75,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		body.put("token", token);
 		body.put("user", (User) authResult.getPrincipal());
 		body.put("expiration", JWTServiceImpl.EXPIRATION_DATE);
+		body.put("user-id", jwtService.getUserId(((User) authResult.getPrincipal()).getUsername()));
 //		body.put("mensaje", String.format("Hola %s, has iniciado sesión con éxito!",
 //				((User) authResult.getPrincipal()).getUsername()));
 

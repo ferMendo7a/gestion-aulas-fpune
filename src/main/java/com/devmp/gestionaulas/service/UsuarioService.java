@@ -43,6 +43,14 @@ public class UsuarioService {
 		return repository.findByUsername(username);
 	}
 
+	public Integer getIdByUsername(String username) {
+		Usuario usuario = findByUsername(username);
+		if (usuario != null && usuario.getId() != null) {
+			return usuario.getId();
+		} else
+			return null;
+	}
+
 	public Usuario registrarNuevoUsuario(Usuario usuario) {
 		if (!usernameUnico(usuario.getUsername())) {
 			// TODO mensaje de error por username existente

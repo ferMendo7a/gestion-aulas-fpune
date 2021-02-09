@@ -26,7 +26,6 @@ public class PeriodoService {
 	}
 
 	public Periodo insertOrUpdate(Periodo periodo) {
-
 		if (periodoYaRegistrado(periodo)) {
 			return null;
 		}
@@ -39,26 +38,26 @@ public class PeriodoService {
 	}
 
 	public Periodo getPeriodoByFecha(Date fecha) {
-		List<Periodo> result = repository.findByFechaInicioLessThanEqualAndFechaFinGreaterThanEqual(fecha);
+		List<Periodo> result = repository.findByFechaInicioLessThanEqualAndFechaFinGreaterThanEqual(fecha, fecha);
 		if (result != null && !result.isEmpty()) {
-			result.get(0);
-		}
-		return null;
+			return result.get(0);
+		} else
+			return null;
 	}
 
-	public boolean periodoYaRegistrado(Periodo periodo) {
+	private boolean periodoYaRegistrado(Periodo periodo) {
 		boolean existePeriodoRegistrado;
 		StringBuilder sql = new StringBuilder();
-		sql.append("select p.* from periodo p");
-		sql.append("\n where (p.fecha_inicio > :fechaInicio and p.fecha_fin < :fechaInicio) or");
-		sql.append("\n 	   (p.fecha_inicio > :fechaFin and p.fecha_fin < :fechaFin)");
+		sql.append("select p.* from periodo_lectivo p");
+		sql.append("\n where (p.fecha_inicio <= :fechaInicio and p.fecha_fin >= :fechaInicio) or");
+		sql.append("\n 	   (p.fecha_inicio <= :fechaFin and p.fecha_fin >= :fechaFin)");
 
 		Query query = em.createNativeQuery(sql.toString(), Periodo.class);
 		query.setParameter("fechaInicio", periodo.getFechaInicio());
 		query.setParameter("fechaFin", periodo.getFechaFin());
 
 		List<Periodo> result = query.getResultList();
-		existePeriodoRegistrado = result != null && result.get(0) != null && result.get(0).getId() != null;
+		existePeriodoRegistrado = result != null && !result.isEmpty() && result.get(0).getId() != null;
 		return existePeriodoRegistrado;
 	}
 
