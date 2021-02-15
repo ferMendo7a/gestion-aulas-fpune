@@ -34,63 +34,71 @@ public class DistribucionService {
 		return repository.findAll();
 	}
 
-	public Distribucion insertOrUpdate(Distribucion distribucion) {
+	public Distribucion insertOrUpdate(Distribucion distribucion) throws Exception {
 		Distribucion retorno = null;
-		// validar periodo lectivo activo
-		Periodo periodoActual = getPeriodoActual(distribucion);
-		if (periodoActual == null) {
-			return null;
-		}
+		try {
 
-		// consultar curso, si no existe guardar
-		distribucion.setCurso(cursoService.insertIfNotExists(distribucion.getCurso()));
-
-		// validar aula disponible
-		// 1. consultar horarios por aula, fecha, inicio y fin de la distribucion
-		// 2. si existe informar al usuario
-		Distribucion distribucionRegistrada = getDistribucionByAulaAndHorario(distribucion);
-		if (distribucionRegistrada != null && distribucionRegistrada.getId() != null) {
-			return null;
-		}
-
-		// curso con horario ya registrado
-		// 1. consultar horarios por curso, fecha, inicio y fin de la distribucion
-		distribucionRegistrada = getDistribucionByCursoAndHorario(distribucion);
-		if (distribucionRegistrada != null && distribucionRegistrada.getId() != null) {
-			return null;
-		}
-
-		// guardar distribucion hasta el final del periodo lectivo si
-		// registrarHastaFinalPeriodo es true
-		if (distribucion.isRegistrarHastaFinalPeriodo()) {
-			// agregar 8 dias a la fecha de la distribucion hasta llegar a la fecha fin del
-			// periodo lectivo
-			List<Distribucion> distribucionList = new ArrayList<Distribucion>();
-			Date fechaNew = distribucion.getFecha();
-
-			while (periodoActual.getFechaFin().compareTo(fechaNew) >= 0) {
-				Distribucion distribucionNew = new Distribucion();
-				distribucionNew.setAula(distribucion.getAula());
-				distribucionNew.setCurso(distribucion.getCurso());
-				distribucionNew.setMateria(distribucion.getMateria());
-				distribucionNew.setUsuario(distribucion.getUsuario());
-				distribucionNew.setHorarioInicio(distribucion.getHorarioInicio());
-				distribucionNew.setHorarioFin(distribucion.getHorarioFin());
-				distribucionNew.setFecha(fechaNew);
-				distribucionList.add(distribucionNew);
-
-				Calendar calendar = Calendar.getInstance();
-				calendar.setTime(distribucionNew.getFecha());
-				calendar.add(Calendar.DAY_OF_YEAR, 7);
-				fechaNew = calendar.getTime();
+			// validar periodo lectivo activo
+			Periodo periodoActual = getPeriodoActual(distribucion);
+			if (periodoActual == null) {
+				throw new Exception("El periodo lectivo para este semestre no fue configurado");
 			}
 
-			distribucionList = repository.saveAll(distribucionList);
-			if (!distribucionList.isEmpty()) {
-				retorno = distribucionList.get(0);
+			// consultar curso, si no existe guardar
+			distribucion.setCurso(cursoService.insertIfNotExists(distribucion.getCurso()));
+
+			// validar aula disponible
+			// 1. consultar horarios por aula, fecha, inicio y fin de la distribucion
+			// 2. si existe informar al usuario
+			Distribucion distribucionRegistrada = getDistribucionByAulaAndHorario(distribucion);
+			if (distribucionRegistrada != null && distribucionRegistrada.getId() != null) {
+				throw new Exception(
+						"El aula seleccionada ya tiene un horario registrado en la fecha " + distribucion.getFecha());
 			}
-		} else {
-			retorno = repository.save(distribucion);
+
+			// curso con horario ya registrado
+			// 1. consultar horarios por curso, fecha, inicio y fin de la distribucion
+			distribucionRegistrada = getDistribucionByCursoAndHorario(distribucion);
+			if (distribucionRegistrada != null && distribucionRegistrada.getId() != null) {
+				throw new Exception(
+						"El curso seleccionado ya tiene un horario registrado en la fecha " + distribucion.getFecha());
+			}
+
+			// guardar distribucion hasta el final del periodo lectivo si
+			// registrarHastaFinalPeriodo es true
+			if (distribucion.isRegistrarHastaFinalPeriodo()) {
+				// agregar 8 dias a la fecha de la distribucion hasta llegar a la fecha fin del
+				// periodo lectivo
+				List<Distribucion> distribucionList = new ArrayList<Distribucion>();
+				Date fechaNew = distribucion.getFecha();
+
+				while (periodoActual.getFechaFin().compareTo(fechaNew) >= 0) {
+					Distribucion distribucionNew = new Distribucion();
+					distribucionNew.setAula(distribucion.getAula());
+					distribucionNew.setCurso(distribucion.getCurso());
+					distribucionNew.setMateria(distribucion.getMateria());
+					distribucionNew.setUsuario(distribucion.getUsuario());
+					distribucionNew.setHorarioInicio(distribucion.getHorarioInicio());
+					distribucionNew.setHorarioFin(distribucion.getHorarioFin());
+					distribucionNew.setFecha(fechaNew);
+					distribucionList.add(distribucionNew);
+
+					Calendar calendar = Calendar.getInstance();
+					calendar.setTime(distribucionNew.getFecha());
+					calendar.add(Calendar.DAY_OF_YEAR, 7);
+					fechaNew = calendar.getTime();
+				}
+
+				distribucionList = repository.saveAll(distribucionList);
+				if (!distribucionList.isEmpty()) {
+					retorno = distribucionList.get(0);
+				}
+			} else {
+				retorno = repository.save(distribucion);
+			}
+
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
 		}
 
 		return retorno;

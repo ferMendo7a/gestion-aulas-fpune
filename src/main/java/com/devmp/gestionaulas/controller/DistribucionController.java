@@ -38,12 +38,13 @@ public class DistribucionController {
 
 	@Secured("ROLE_ADMIN")
 	@PostMapping("/guardar")
-	public ResponseEntity<Distribucion> save(@RequestBody Distribucion distribucion) {
-		Distribucion retorno = service.insertOrUpdate(distribucion);
-		if (retorno != null) {
+	public ResponseEntity<Object> save(@RequestBody Distribucion distribucion) {
+		Distribucion retorno;
+		try {
+			retorno = service.insertOrUpdate(distribucion);
 			return ResponseEntity.ok(retorno);
-		} else {
-			return ResponseEntity.badRequest().body(retorno);
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(e);
 		}
 	}
 
