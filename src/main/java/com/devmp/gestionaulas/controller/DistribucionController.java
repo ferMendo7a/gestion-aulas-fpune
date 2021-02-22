@@ -44,6 +44,7 @@ public class DistribucionController {
 			retorno = service.insertOrUpdate(distribucion);
 			return ResponseEntity.ok(retorno);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return ResponseEntity.badRequest().body(e);
 		}
 	}

@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.devmp.gestionaulas.controller.model.IntervaloInicioFin;
 import com.devmp.gestionaulas.model.Aula;
 import com.devmp.gestionaulas.service.AulaService;
 
-@Secured("ROLE_ADMIN")
 @RestController
 @RequestMapping(path = "/aula")
 public class AulaController {
@@ -45,6 +44,17 @@ public class AulaController {
 			Aula res = service.findById(id);
 			return ResponseEntity.ok(res);
 		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(e);
+		}
+	}
+
+	@PostMapping("/consulta-disponibles")
+	public ResponseEntity<?> getDisponibles(@RequestBody IntervaloInicioFin intervalo) {
+		try {
+			List<Aula> retorno = service.getAulasDisponibles(intervalo);
+			return ResponseEntity.ok(retorno);
+		} catch (Exception e) {
+			e.printStackTrace();
 			return ResponseEntity.badRequest().body(e);
 		}
 	}

@@ -38,34 +38,30 @@ public class DistribucionService {
 		Distribucion retorno = null;
 		try {
 
-			// validar periodo lectivo activo
 			Periodo periodoActual = getPeriodoActual(distribucion);
 			if (periodoActual == null) {
 				throw new Exception("El periodo lectivo para este semestre no fue configurado");
 			}
 
-			// consultar curso, si no existe guardar
 			distribucion.setCurso(cursoService.insertIfNotExists(distribucion.getCurso()));
 
-			// validar aula disponible
-			// 1. consultar horarios por aula, fecha, inicio y fin de la distribucion
-			// 2. si existe informar al usuario
-			Distribucion distribucionRegistrada = getDistribucionByAulaAndHorario(distribucion);
-			if (distribucionRegistrada != null && distribucionRegistrada.getId() != null) {
-				throw new Exception(
-						"El aula seleccionada ya tiene un horario registrado en la fecha " + distribucion.getFecha());
+			if (!distribucion.isCompartirAula()) {
+
+				Distribucion distribucionRegistrada = null;
+				distribucionRegistrada = getDistribucionByAulaAndHorario(distribucion);
+				if (distribucionRegistrada != null && distribucionRegistrada.getId() != null) {
+					throw new Exception("El aula seleccionada ya tiene un horario registrado en la fecha "
+							+ distribucion.getFecha());
+				}
+
+				distribucionRegistrada = getDistribucionByCursoAndHorario(distribucion);
+				if (distribucionRegistrada != null && distribucionRegistrada.getId() != null) {
+					throw new Exception("El curso seleccionado ya tiene un horario registrado en la fecha "
+							+ distribucion.getFecha());
+				}
+
 			}
 
-			// curso con horario ya registrado
-			// 1. consultar horarios por curso, fecha, inicio y fin de la distribucion
-			distribucionRegistrada = getDistribucionByCursoAndHorario(distribucion);
-			if (distribucionRegistrada != null && distribucionRegistrada.getId() != null) {
-				throw new Exception(
-						"El curso seleccionado ya tiene un horario registrado en la fecha " + distribucion.getFecha());
-			}
-
-			// guardar distribucion hasta el final del periodo lectivo si
-			// registrarHastaFinalPeriodo es true
 			if (distribucion.isRegistrarHastaFinalPeriodo()) {
 				// agregar 8 dias a la fecha de la distribucion hasta llegar a la fecha fin del
 				// periodo lectivo
@@ -87,6 +83,7 @@ public class DistribucionService {
 					calendar.setTime(distribucionNew.getFecha());
 					calendar.add(Calendar.DAY_OF_YEAR, 7);
 					fechaNew = calendar.getTime();
+
 				}
 
 				distribucionList = repository.saveAll(distribucionList);

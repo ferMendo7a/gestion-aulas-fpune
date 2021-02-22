@@ -73,6 +73,9 @@ public class Distribucion {
 	@Transient
 	private boolean registrarHastaFinalPeriodo;
 
+	@Transient
+	private boolean compartirAula;
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

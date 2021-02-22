@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Base64Utils;
 
+import com.devmp.gestionaulas.model.Usuario;
 import com.devmp.gestionaulas.security.SimpleGrantedAuthorityMixin;
 import com.devmp.gestionaulas.service.UsuarioService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -97,12 +98,8 @@ public class JWTServiceImpl implements JWTService {
 	}
 
 	@Override
-	public String getUserId(String username) {
-		Integer userId = serviceUsuario.getIdByUsername(username);
-		if (userId != null) {
-			return String.valueOf(userId);
-		} else
-			return null;
+	public Usuario getUser(String username) {
+		return serviceUsuario.cargarDatosUsuarioConectado(username);
 	}
 
 }

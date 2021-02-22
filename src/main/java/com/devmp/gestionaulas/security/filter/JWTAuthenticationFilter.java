@@ -3,6 +3,7 @@ package com.devmp.gestionaulas.security.filter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -17,6 +18,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import com.devmp.gestionaulas.model.PaginaAccion;
+import com.devmp.gestionaulas.model.Privilegio;
 import com.devmp.gestionaulas.model.Usuario;
 import com.devmp.gestionaulas.security.service.JWTService;
 import com.devmp.gestionaulas.security.service.JWTServiceImpl;
@@ -68,6 +71,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 			Authentication authResult) throws IOException, ServletException {
 
 		String token = jwtService.create(authResult);
+		Usuario user = jwtService.getUser(((User) authResult.getPrincipal()).getUsername());
 
 		response.addHeader(JWTServiceImpl.HEADER_STRING, JWTServiceImpl.TOKEN_PREFIX + token);
 
@@ -75,9 +79,12 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		body.put("token", token);
 		body.put("user", (User) authResult.getPrincipal());
 		body.put("expiration", JWTServiceImpl.EXPIRATION_DATE);
-		body.put("user-id", jwtService.getUserId(((User) authResult.getPrincipal()).getUsername()));
-//		body.put("mensaje", String.format("Hola %s, has iniciado sesión con éxito!",
-//				((User) authResult.getPrincipal()).getUsername()));
+		body.put("user-id", user.getId());
+		body.put("privilegios", user.getGrupo().getPrivilegios().stream()
+				.filter(result -> result.getConsultar().equals("S"))
+				.map(Privilegio::getPaginaAccion)
+				.map(PaginaAccion::getDescripcion)
+				.collect(Collectors.toList()));
 
 		response.getWriter().write(new ObjectMapper().writeValueAsString(body));
 		response.setStatus(200);

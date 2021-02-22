@@ -6,6 +6,8 @@ import java.util.Collection;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
+import com.devmp.gestionaulas.model.Usuario;
+
 import io.jsonwebtoken.Claims;
 
 public interface JWTService {
@@ -22,5 +24,5 @@ public interface JWTService {
 
 	public String resolve(String token);
 
-	public String getUserId(String username);
+	public Usuario getUser(String username);
 }
