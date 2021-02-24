@@ -13,9 +13,9 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Base64Utils;
 
-import com.devmp.gestionaulas.model.Usuario;
+import com.devmp.gestionaulas.domain.model.Usuario;
+import com.devmp.gestionaulas.domain.service.UsuarioService;
 import com.devmp.gestionaulas.security.SimpleGrantedAuthorityMixin;
-import com.devmp.gestionaulas.service.UsuarioService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Claims;

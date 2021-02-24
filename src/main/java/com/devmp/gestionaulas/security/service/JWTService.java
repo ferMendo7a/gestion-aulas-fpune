@@ -6,7 +6,7 @@ import java.util.Collection;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
-import com.devmp.gestionaulas.model.Usuario;
+import com.devmp.gestionaulas.domain.model.Usuario;
 
 import io.jsonwebtoken.Claims;
 

@@ -15,10 +15,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.devmp.gestionaulas.domain.service.JpaUserDetailsService;
 import com.devmp.gestionaulas.security.filter.JWTAuthenticationFilter;
 import com.devmp.gestionaulas.security.filter.JWTAuthorizationFilter;
 import com.devmp.gestionaulas.security.service.JWTService;
-import com.devmp.gestionaulas.service.JpaUserDetailsService;
 
 @Configuration
 @EnableGlobalMethodSecurity(securedEnabled = true)

@@ -18,9 +18,9 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import com.devmp.gestionaulas.model.PaginaAccion;
-import com.devmp.gestionaulas.model.Privilegio;
-import com.devmp.gestionaulas.model.Usuario;
+import com.devmp.gestionaulas.domain.model.PaginaAccion;
+import com.devmp.gestionaulas.domain.model.Privilegio;
+import com.devmp.gestionaulas.domain.model.Usuario;
 import com.devmp.gestionaulas.security.service.JWTService;
 import com.devmp.gestionaulas.security.service.JWTServiceImpl;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -80,11 +80,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		body.put("user", (User) authResult.getPrincipal());
 		body.put("expiration", JWTServiceImpl.EXPIRATION_DATE);
 		body.put("user-id", user.getId());
-		body.put("privilegios", user.getGrupo().getPrivilegios().stream()
-				.filter(result -> result.getConsultar().equals("S"))
-				.map(Privilegio::getPaginaAccion)
-				.map(PaginaAccion::getDescripcion)
-				.collect(Collectors.toList()));
+		body.put("privilegios", user.getGrupo().getPrivilegios().stream().filter(result -> result.getConsultar())
+				.map(Privilegio::getPaginaAccion).map(PaginaAccion::getDescripcion).collect(Collectors.toList()));
 
 		response.getWriter().write(new ObjectMapper().writeValueAsString(body));
 		response.setStatus(200);
